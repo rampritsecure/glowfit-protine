@@ -15,7 +15,12 @@ docs
 /prisma/db.sqlite
 /prisma/db.sqlite-journal
 db.sqlite
-
+.claude/
+.chrome-temp/
+.agents/
+.windsurf/
+.cursor/
+.agent/
 # next.js
 /.next/
 /out/

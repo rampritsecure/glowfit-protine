@@ -5,86 +5,57 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-interface CategoryCardProps {
-	title: string;
-	subtitle: string;
-	imageSrc: string;
-	imageAlt: string;
+interface CategoryData {
+	id: string;
+	titleLine1: string;
+	titleLine2: string;
+	subLine1: string;
+	subLine2: string;
 	href: string;
-	delay?: number;
+	artSrc: string;
+	bgClass: string;
+	delay: number;
 }
 
-function CategoryCard({
-	title,
-	subtitle,
-	imageSrc,
-	imageAlt,
-	href,
-	delay = 0,
-}: CategoryCardProps) {
-	return (
-		<motion.div
-			className="group relative min-h-[260px] overflow-hidden rounded-2xl border border-gray-200/60 bg-[#F6F6F7] transition-all duration-300 hover:border-gray-300/80 hover:bg-[#F0F0F2] hover:shadow-lg sm:min-h-[280px]"
-			initial={{ opacity: 0, y: 25 }}
-			transition={{ duration: 0.5, delay, ease: "easeOut" }}
-			viewport={{ once: true, margin: "-50px" }}
-			whileInView={{ opacity: 1, y: 0 }}
-		>
-			{/* Red angular accent on right half */}
-			<div className="pointer-events-none absolute top-0 right-0 z-0 h-full w-[55%] overflow-hidden">
-				<svg
-					aria-hidden="true"
-					className="absolute top-0 right-0 h-full w-full text-[#E10600] transition-transform duration-500 ease-out group-hover:translate-x-1 group-hover:scale-105"
-					fill="currentColor"
-					preserveAspectRatio="none"
-					viewBox="0 0 200 300"
-				>
-					<polygon points="80,0 200,0 200,300 130,300 170,160 70,190" />
-				</svg>
-			</div>
-
-			{/* Content */}
-			<div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7">
-				{/* Text + CTA */}
-				<div className="max-w-[55%]">
-					<h3 className="mb-2 font-athletic-black text-[#0B0B0D] text-[26px] uppercase leading-[0.92] tracking-tight sm:text-[30px] md:text-[28px] lg:text-[32px]">
-						{title}
-					</h3>
-					<p className="mb-6 font-semibold text-[11px] text-gray-500 uppercase leading-snug tracking-wider sm:text-xs">
-						{subtitle}
-					</p>
-				</div>
-
-				<div className="max-w-[55%]">
-					<Link
-						className="inline-flex items-center gap-2 rounded-full bg-[#0B0B0D] px-5 py-2.5 font-bold text-[11px] text-white uppercase tracking-wider shadow-sm transition-all duration-200 group-hover:bg-[#E10600] group-hover:shadow-md sm:text-xs"
-						href={href}
-					>
-						SHOP NOW
-						<ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-					</Link>
-				</div>
-			</div>
-
-			{/* Product Image */}
-			<div className="pointer-events-none absolute right-2 bottom-2 z-10 flex h-[85%] w-[42%] items-end justify-center sm:right-4 sm:bottom-3">
-				<div className="relative flex h-full w-full items-end justify-center transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-105">
-					<Image
-						alt={imageAlt}
-						className="max-h-full w-auto object-contain drop-shadow-xl"
-						height={260}
-						src={imageSrc}
-						width={280}
-					/>
-				</div>
-			</div>
-		</motion.div>
-	);
-}
+const CATEGORIES: CategoryData[] = [
+	{
+		id: "whey",
+		titleLine1: "WHEY",
+		titleLine2: "PROTEIN",
+		subLine1: "CLEAN PROTEIN.",
+		subLine2: "REAL RESULTS.",
+		href: "/categories/whey-protein",
+		artSrc: "/assets/art-whey.png",
+		bgClass: "bg-gradient-to-r from-[#F8F8FA] via-[#F8F8FA] to-[#F1F1F4]",
+		delay: 0.05,
+	},
+	{
+		id: "rtm",
+		titleLine1: "READY-TO-MIX",
+		titleLine2: "PROTEIN",
+		subLine1: "PROTEIN ON THE GO.",
+		subLine2: "ANYTIME. ANYWHERE.",
+		href: "/categories/ready-to-mix",
+		artSrc: "/assets/art-rtm.png",
+		bgClass: "bg-gradient-to-r from-[#F6F3ED] via-[#F6F3ED] to-[#EFEAE0]",
+		delay: 0.15,
+	},
+	{
+		id: "pb",
+		titleLine1: "PEANUT",
+		titleLine2: "BUTTER",
+		subLine1: "GOOD NUTRITION.",
+		subLine2: "GREAT TASTE.",
+		href: "/categories/peanut-butter",
+		artSrc: "/assets/art-pb.png",
+		bgClass: "bg-gradient-to-r from-[#FAF6EF] via-[#FAF6EF] to-[#F2EDE1]",
+		delay: 0.25,
+	},
+];
 
 export function CategorySection() {
 	return (
-		<section className="w-full bg-white pt-10 pb-16 sm:pb-24">
+		<section className="w-full bg-white pt-8 pb-16 sm:pb-24">
 			<div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-10">
 				{/* Kicker */}
 				<div className="mb-2 flex items-center gap-3">
@@ -110,36 +81,64 @@ export function CategorySection() {
 					</Link>
 				</div>
 
-				{/* 3 Category Cards Grid */}
-				<div className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:gap-7">
-					<CategoryCard
-						delay={0.05}
-						href="/categories/whey-protein"
-						imageAlt="Glow & Fit Whey Protein Chocolate Jar"
-						imageSrc="/assets/whey-jar.png"
-						subtitle="CLEAN PROTEIN. REAL RESULTS."
-						title="WHEY PROTEIN"
-					/>
-					<CategoryCard
-						delay={0.15}
-						href="/categories/ready-to-mix"
-						imageAlt="Glow & Fit Ready-to-mix protein bottle"
-						imageSrc="/assets/ready-to-mix-bottle.png"
-						subtitle="PROTEIN ON THE GO. ANYTIME. ANYWHERE."
-						title="READY-TO-MIX PROTEIN"
-					/>
-					<CategoryCard
-						delay={0.25}
-						href="/categories/peanut-butter"
-						imageAlt="Glow & Fit Creamy Peanut Butter Jar"
-						imageSrc="/assets/peanut-butter.png"
-						subtitle="GOOD NUTRITION. GREAT TASTE."
-						title="PEANUT BUTTER"
-					/>
+				{/* 3 Real Category Cards Grid */}
+				<div className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:gap-6">
+					{CATEGORIES.map((card) => (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							key={card.id}
+							transition={{
+								duration: 0.45,
+								delay: card.delay,
+								ease: "easeOut",
+							}}
+							viewport={{ once: true, margin: "-40px" }}
+							whileInView={{ opacity: 1, y: 0 }}
+						>
+							<Link
+								aria-label={`Shop ${card.titleLine1} ${card.titleLine2} - ${card.subLine1} ${card.subLine2}`}
+								className={`group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-2xl border border-gray-200/80 sm:min-h-[240px] lg:min-h-[250px] ${card.bgClass} p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-gray-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600] active:scale-[0.99] sm:p-6`}
+								href={card.href}
+							>
+								{/* Left Real Content: Headline, Subtitle, and Button */}
+								<div className="relative z-10 flex h-full max-w-[50%] flex-col justify-between">
+									<div>
+										<h3 className="font-athletic-black text-[24px] text-brand-black uppercase leading-[0.88] tracking-[-0.02em] sm:text-[28px] lg:text-[30px] xl:text-[32px]">
+											{card.titleLine1} <br />
+											{card.titleLine2}
+										</h3>
+										<p className="mt-2 font-bold text-[#4B5563] text-[10px] uppercase leading-tight tracking-[0.14em] sm:text-[11px]">
+											{card.subLine1} <br />
+											{card.subLine2}
+										</p>
+									</div>
+
+									<div className="pt-6 sm:pt-7">
+										<span className="inline-flex items-center gap-2 rounded-lg bg-[#0B0B0D] px-4 py-2 font-bold text-[10.5px] text-white uppercase tracking-wider shadow-sm transition-all duration-200 group-hover:bg-[#E10600] group-hover:shadow-md sm:px-4.5 sm:py-2.5 sm:text-[11.5px]">
+											SHOP NOW
+											<ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-1" />
+										</span>
+									</div>
+								</div>
+
+								{/* Right Side Visual Artwork (Product, ground shadow, chocolate/peanuts/powder, red lightning) */}
+								<div className="pointer-events-none absolute top-0 right-0 bottom-0 w-[58%] select-none overflow-hidden">
+									<Image
+										alt={`${card.titleLine1} ${card.titleLine2}`}
+										className="object-cover object-right transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+										fill
+										priority
+										sizes="(min-width: 1024px) 25vw, (min-width: 768px) 35vw, 55vw"
+										src={card.artSrc}
+									/>
+								</div>
+							</Link>
+						</motion.div>
+					))}
 				</div>
 
 				{/* Mobile "View All" Link */}
-				<div className="mt-6 flex justify-center sm:hidden">
+				<div className="mt-8 flex justify-center sm:hidden">
 					<Link
 						className="inline-flex items-center gap-2 font-bold text-[#E10600] text-xs uppercase tracking-wider"
 						href="/products"

@@ -8,12 +8,6 @@ export default function HomePage() {
 		<main className="flex min-h-screen flex-col overflow-x-hidden bg-white selection:bg-[#E10600] selection:text-white">
 			{/* Unified Header & Hero Section */}
 			<div className="relative w-full overflow-hidden bg-white">
-				{/* Seamless right red panel extension for ultra-wide displays (>1440px) */}
-				<div
-					className="pointer-events-none absolute top-[210px] right-0 bottom-0 z-0 hidden bg-[#990200] 2xl:block"
-					style={{ width: "calc(50% - 720px)" }}
-				/>
-
 				{/* 1440px Master Container ensuring 1:1 synchronization */}
 				<div className="relative mx-auto min-h-[640px] max-w-[1440px] lg:min-h-[680px]">
 					<HeroBackdrop />
