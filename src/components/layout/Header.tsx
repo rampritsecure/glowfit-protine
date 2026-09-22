@@ -172,12 +172,12 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 				</div>
 
 				{/* Right: Search + Cart + Mobile Menu */}
-				<div className="flex items-center gap-4 sm:gap-6">
+				<div className="flex items-center gap-4 sm:gap-24">
 					{/* Search Bar */}
-					<div className="relative hidden sm:block w-[220px] md:w-[280px] lg:w-[340px] xl:w-[400px]">
-						<div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+					<div className="relative hidden sm:block w-[190px] md:w-[220px] lg:w-[245px] xl:w-[260px]">
+						<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
 							<Search
-								className="h-[18px] w-[18px] text-gray-500"
+								className="h-4 w-4 text-gray-500"
 								strokeWidth={2}
 							/>
 						</div>
@@ -186,7 +186,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							placeholder="Search products, flavours or goals..."
-							className="w-full pl-11 pr-4 py-2.5 text-[13px] bg-white text-gray-900 placeholder-gray-400 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-transparent transition-all"
+							className="w-full pl-9 pr-3.5 py-2 text-[12px] bg-white text-gray-900 placeholder-gray-400 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-transparent transition-all"
 						/>
 					</div>
 
