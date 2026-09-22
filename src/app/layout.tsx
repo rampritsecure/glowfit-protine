@@ -34,7 +34,7 @@ export default function RootLayout({
 			className={`${barlowCondensed.variable} ${inter.variable} scroll-smooth antialiased`}
 			lang="en"
 		>
-			<body className="bg-white text-[#111111] font-sans overflow-x-hidden min-h-screen selection:bg-[#E10600] selection:text-white">
+			<body className="min-h-screen overflow-x-hidden bg-white font-sans text-[#111111] selection:bg-[#E10600] selection:text-white">
 				<TRPCReactProvider>{children}</TRPCReactProvider>
 			</body>
 		</html>

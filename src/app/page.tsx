@@ -1,21 +1,21 @@
-import { Header } from "@/components/layout/Header";
+import { CategorySection } from "@/components/home/CategorySection";
 import { HeroBackdrop } from "@/components/home/HeroBackdrop";
 import { HeroSection } from "@/components/home/HeroSection";
-import { CategorySection } from "@/components/home/CategorySection";
+import { Header } from "@/components/layout/Header";
 
 export default function HomePage() {
 	return (
-		<main className="min-h-screen bg-white flex flex-col overflow-x-hidden selection:bg-[#E10600] selection:text-white">
+		<main className="flex min-h-screen flex-col overflow-x-hidden bg-white selection:bg-[#E10600] selection:text-white">
 			{/* Unified Header & Hero Section */}
-			<div className="relative w-full bg-white overflow-hidden">
+			<div className="relative w-full overflow-hidden bg-white">
 				{/* Seamless right red panel extension for ultra-wide displays (>1440px) */}
 				<div
-					className="hidden 2xl:block absolute top-[210px] right-0 bottom-0 pointer-events-none z-0 bg-[#990200]"
+					className="pointer-events-none absolute top-[210px] right-0 bottom-0 z-0 hidden bg-[#990200] 2xl:block"
 					style={{ width: "calc(50% - 720px)" }}
 				/>
 
 				{/* 1440px Master Container ensuring 1:1 synchronization */}
-				<div className="relative max-w-[1440px] mx-auto min-h-[640px] lg:min-h-[680px]">
+				<div className="relative mx-auto min-h-[640px] max-w-[1440px] lg:min-h-[680px]">
 					<HeroBackdrop />
 					<Header />
 					<HeroSection />
