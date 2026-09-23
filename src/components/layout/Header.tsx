@@ -81,18 +81,18 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 								<div className="absolute top-full left-0 z-50 w-56 pt-2">
 									<div className="rounded-xl border border-gray-100 bg-white px-1.5 py-2 shadow-xl">
 										<Link
-											className="flex items-center justify-between rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="flex items-center justify-between rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/products"
 										>
 											All Products
 											<ArrowRight className="h-3.5 w-3.5 text-gray-400" />
 										</Link>
 										<Link
-											className="flex items-center justify-between rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="flex items-center justify-between rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/products#ready-to-mix"
 										>
 											Ready-to-Mix Bottles
-											<span className="rounded bg-[#E10600]/10 px-1.5 py-0.5 font-bold text-[#E10600] text-[10px]">
+											<span className="rounded bg-brand-red/10 px-1.5 py-0.5 font-bold text-brand-red text-[10px]">
 												NEW
 											</span>
 										</Link>
@@ -170,7 +170,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 				{/* Right: Search + (Avatar + Cart) + Mobile Menu */}
 				<div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
 					{/* Search Bar (within the template/gray design area) */}
-					<div className="relative hidden w-47.5 sm:block md:w-55 lg:w-61.25 xl:w-[260px]">
+					<div className="relative hidden w-47.5 sm:block md:w-55 lg:w-61.25 xl:w-65">
 						<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
 							<Search className="h-4 w-4 text-gray-500" strokeWidth={2} />
 						</div>

@@ -3,29 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import { auth } from "@/server/better-auth";
-
-const signInSchema = z.object({
-	email: z.string().trim().email("Please enter a valid email address"),
-	password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-const signUpSchema = z
-	.object({
-		name: z.string().trim().min(2, "Name must be at least 2 characters"),
-		email: z.string().trim().email("Please enter a valid email address"),
-		password: z.string().min(8, "Password must be at least 8 characters"),
-		confirmPassword: z.string(),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords do not match",
-		path: ["confirmPassword"],
-	});
+import { signInSchema, signUpSchema } from "./schemas";
 
 export type AuthActionResult = {
 	success: boolean;
 	error?: string;
+	fieldErrors?: Record<string, string>;
 	user?: unknown;
 };
 
@@ -40,9 +24,17 @@ export async function signInAction(
 
 	const parsed = signInSchema.safeParse(rawData);
 	if (!parsed.success) {
+		const fieldErrors: Record<string, string> = {};
+		for (const issue of parsed.error.issues) {
+			const field = issue.path[0]?.toString();
+			if (field && !fieldErrors[field]) {
+				fieldErrors[field] = issue.message;
+			}
+		}
 		return {
 			success: false,
 			error: parsed.error.issues[0]?.message ?? "Invalid credentials",
+			fieldErrors,
 		};
 	}
 
@@ -62,14 +54,11 @@ export async function signInAction(
 		};
 	} catch (err: unknown) {
 		const message =
-			err &&
-			typeof err === "object" &&
-			"body" in err &&
-			(err as { body?: { message?: string } }).body?.message
+			err && typeof err === "object" && "body" in err && (err as { body?: { message?: string } }).body?.message
 				? (err as { body: { message: string } }).body.message
 				: err instanceof Error
 					? err.message
-					: "Invalid email or password";
+					: "Invalid email or password. Please verify your credentials.";
 
 		return {
 			success: false,
@@ -91,9 +80,17 @@ export async function signUpAction(
 
 	const parsed = signUpSchema.safeParse(rawData);
 	if (!parsed.success) {
+		const fieldErrors: Record<string, string> = {};
+		for (const issue of parsed.error.issues) {
+			const field = issue.path[0]?.toString();
+			if (field && !fieldErrors[field]) {
+				fieldErrors[field] = issue.message;
+			}
+		}
 		return {
 			success: false,
-			error: parsed.error.issues[0]?.message ?? "Invalid form input",
+			error: parsed.error.issues[0]?.message ?? "Please resolve the highlighted errors.",
+			fieldErrors,
 		};
 	}
 
@@ -114,10 +111,7 @@ export async function signUpAction(
 		};
 	} catch (err: unknown) {
 		const message =
-			err &&
-			typeof err === "object" &&
-			"body" in err &&
-			(err as { body?: { message?: string } }).body?.message
+			err && typeof err === "object" && "body" in err && (err as { body?: { message?: string } }).body?.message
 				? (err as { body: { message: string } }).body.message
 				: err instanceof Error
 					? err.message
