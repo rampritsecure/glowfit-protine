@@ -4,6 +4,7 @@ import { nextCookies } from "better-auth/next-js";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/server/email";
 
 export const auth = betterAuth({
 	baseURL:
@@ -16,6 +17,25 @@ export const auth = betterAuth({
 	}),
 	emailAndPassword: {
 		enabled: true,
+		requireEmailVerification: true,
+		sendResetPassword: async ({ user, url }) => {
+			await sendPasswordResetEmail({
+				email: user.email,
+				name: user.name,
+				url,
+			});
+		},
+	},
+	emailVerification: {
+		sendOnSignUp: true,
+		autoSignInAfterVerification: true,
+		sendVerificationEmail: async ({ user, url }) => {
+			await sendVerificationEmail({
+				email: user.email,
+				name: user.name,
+				url,
+			});
+		},
 	},
 	socialProviders: {
 		...(env.BETTER_AUTH_GITHUB_CLIENT_ID && env.BETTER_AUTH_GITHUB_CLIENT_SECRET

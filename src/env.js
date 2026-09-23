@@ -15,6 +15,10 @@ export const env = createEnv({
 		BETTER_AUTH_GITHUB_CLIENT_ID: z.string().optional(),
 		BETTER_AUTH_GITHUB_CLIENT_SECRET: z.string().optional(),
 		DATABASE_URL: z.string().url(),
+		RESEND_API_KEY: z.string().optional(),
+		EMAIL_FROM: z
+			.string()
+			.default("Glow & Fit Nutrition <onboarding@resend.dev>"),
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
 			.default("development"),
@@ -40,6 +44,8 @@ export const env = createEnv({
 		BETTER_AUTH_GITHUB_CLIENT_SECRET:
 			process.env.BETTER_AUTH_GITHUB_CLIENT_SECRET,
 		DATABASE_URL: process.env.DATABASE_URL,
+		RESEND_API_KEY: process.env.RESEND_API_KEY,
+		EMAIL_FROM: process.env.EMAIL_FROM,
 		NODE_ENV: process.env.NODE_ENV,
 	},
 	/**

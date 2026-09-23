@@ -11,6 +11,8 @@ export type AuthActionResult = {
 	error?: string;
 	fieldErrors?: Record<string, string>;
 	user?: unknown;
+	emailNotVerified?: boolean;
+	emailVerificationSent?: boolean;
 };
 
 export async function signInAction(
@@ -54,15 +56,29 @@ export async function signInAction(
 		};
 	} catch (err: unknown) {
 		const message =
-			err && typeof err === "object" && "body" in err && (err as { body?: { message?: string } }).body?.message
+			err &&
+			typeof err === "object" &&
+			"body" in err &&
+			(err as { body?: { message?: string } }).body?.message
 				? (err as { body: { message: string } }).body.message
 				: err instanceof Error
 					? err.message
 					: "Invalid email or password. Please verify your credentials.";
 
+		const isEmailNotVerified =
+			message.toLowerCase().includes("email not verified") ||
+			message.toLowerCase().includes("verify your email") ||
+			(typeof err === "object" &&
+				err !== null &&
+				"code" in err &&
+				(err as { code?: string }).code === "EMAIL_NOT_VERIFIED");
+
 		return {
 			success: false,
-			error: message,
+			error: isEmailNotVerified
+				? "Your email is not verified yet. We have sent a verification link to your email."
+				: message,
+			emailNotVerified: Boolean(isEmailNotVerified),
 		};
 	}
 }
@@ -89,7 +105,9 @@ export async function signUpAction(
 		}
 		return {
 			success: false,
-			error: parsed.error.issues[0]?.message ?? "Please resolve the highlighted errors.",
+			error:
+				parsed.error.issues[0]?.message ??
+				"Please resolve the highlighted errors.",
 			fieldErrors,
 		};
 	}
@@ -108,15 +126,71 @@ export async function signUpAction(
 		return {
 			success: true,
 			user: response.user,
+			emailVerificationSent: true,
 		};
 	} catch (err: unknown) {
 		const message =
-			err && typeof err === "object" && "body" in err && (err as { body?: { message?: string } }).body?.message
+			err &&
+			typeof err === "object" &&
+			"body" in err &&
+			(err as { body?: { message?: string } }).body?.message
 				? (err as { body: { message: string } }).body.message
 				: err instanceof Error
 					? err.message
 					: "Failed to create account. User may already exist.";
 
+		return {
+			success: false,
+			error: message,
+		};
+	}
+}
+
+export async function requestPasswordResetAction(
+	email: string,
+): Promise<{ success: boolean; error?: string; message?: string }> {
+	try {
+		await auth.api.requestPasswordReset({
+			body: {
+				email,
+				redirectTo: "/login",
+			},
+			headers: await headers(),
+		});
+		return {
+			success: true,
+			message:
+				"If an account exists for this email, password reset instructions have been sent.",
+		};
+	} catch (err: unknown) {
+		const message =
+			err instanceof Error ? err.message : "Failed to request password reset.";
+		return {
+			success: false,
+			error: message,
+		};
+	}
+}
+
+export async function resendVerificationEmailAction(
+	email: string,
+): Promise<{ success: boolean; error?: string; message?: string }> {
+	try {
+		await auth.api.sendVerificationEmail({
+			body: {
+				email,
+			},
+			headers: await headers(),
+		});
+		return {
+			success: true,
+			message: "Verification email sent. Please check your inbox.",
+		};
+	} catch (err: unknown) {
+		const message =
+			err instanceof Error
+				? err.message
+				: "Failed to resend verification email.";
 		return {
 			success: false,
 			error: message,

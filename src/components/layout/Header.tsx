@@ -1,19 +1,37 @@
 "use client";
 
-import { ArrowRight, ChevronDown, Menu, Search, User, X } from "lucide-react";
+import {
+	ArrowRight,
+	ChevronDown,
+	Heart,
+	LogOut,
+	Menu,
+	Package,
+	RotateCw,
+	Search,
+	Settings,
+	User,
+	X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { authClient } from "@/server/better-auth/client";
+import { UserMenu } from "./UserMenu";
 
 interface HeaderProps {
 	cartCount?: number;
 }
 
 export function Header({ cartCount = 0 }: HeaderProps) {
+	const router = useRouter();
+	const { data: session } = authClient.useSession();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isShopOpen, setIsShopOpen] = useState(false);
 	const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isMobileLoggingOut, setIsMobileLoggingOut] = useState(false);
 
 	const shopRef = useRef<HTMLDivElement>(null);
 	const categoriesRef = useRef<HTMLDivElement>(null);
@@ -60,6 +78,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 					{/* Desktop Nav */}
 					<nav className="hidden items-center gap-7 font-semibold text-[#111111] text-[15px] md:flex lg:gap-9">
 						{/* Shop */}
+						{/* biome-ignore lint/a11y/noStaticElementInteractions: Navigation dropdown menu hover container */}
 						<div
 							className="relative"
 							onMouseEnter={() => setIsShopOpen(true)}
@@ -92,7 +111,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 											href="/products#ready-to-mix"
 										>
 											Ready-to-Mix Bottles
-											<span className="rounded bg-brand-red/10 px-1.5 py-0.5 font-bold text-brand-red text-[10px]">
+											<span className="rounded bg-brand-red/10 px-1.5 py-0.5 font-bold text-[10px] text-brand-red">
 												NEW
 											</span>
 										</Link>
@@ -114,6 +133,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 						</div>
 
 						{/* Categories */}
+						{/* biome-ignore lint/a11y/noStaticElementInteractions: Navigation dropdown menu hover container */}
 						<div
 							className="relative"
 							onMouseEnter={() => setIsCategoriesOpen(true)}
@@ -185,14 +205,8 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 
 					{/* Avatar and Shopping Cart grouped nearby with 2-4px space on white background */}
 					<div className="flex items-center gap-1 sm:gap-1.5">
-						{/* Account / Avatar */}
-						<Link
-							aria-label="Account or Sign In"
-							className="group flex h-9 w-9 items-center justify-center rounded-full text-brand-black transition-colors hover:bg-black/5 hover:text-brand-red focus:outline-none"
-							href="/login"
-						>
-							<User className="h-5 w-5 transition-transform group-hover:scale-105" />
-						</Link>
+						{/* Account / Avatar Dropdown */}
+						<UserMenu />
 
 						{/* Cart */}
 						<Link
@@ -294,14 +308,107 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 						About
 					</Link>
 					<div className="border-gray-100 border-t pt-2">
-						<Link
-							className="flex items-center gap-2 py-2.5 font-bold text-base text-brand-red hover:text-brand-red-hover"
-							href="/login"
-							onClick={() => setIsMobileMenuOpen(false)}
-						>
-							<User className="h-5 w-5" />
-							<span>Sign In / Register</span>
-						</Link>
+						{session?.user ? (
+							<div className="space-y-2.5 py-1">
+								<div className="flex items-center gap-3 rounded-xl bg-gray-50 p-2.5 text-left">
+									<div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-red font-bold text-sm text-white">
+										{session.user.image ? (
+											<Image
+												alt={session.user.name || "User"}
+												className="h-full w-full rounded-full object-cover"
+												height={40}
+												src={session.user.image}
+												unoptimized
+												width={40}
+											/>
+										) : (
+											<span>
+												{(session.user.name || "U")[0]?.toUpperCase()}
+											</span>
+										)}
+									</div>
+									<div className="min-w-0 flex-1">
+										<p className="truncate font-bold text-gray-900 text-sm">
+											{session.user.name || "Athlete"}
+										</p>
+										<p className="truncate text-gray-500 text-xs">
+											{session.user.email}
+										</p>
+									</div>
+								</div>
+
+								<div className="grid grid-cols-2 gap-2 pt-1 text-left">
+									<Link
+										className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 font-semibold text-gray-700 text-xs hover:text-brand-red"
+										href="/orders"
+										onClick={() => setIsMobileMenuOpen(false)}
+									>
+										<Package className="h-4 w-4 text-gray-500" />
+										<span>My Orders</span>
+									</Link>
+									<Link
+										className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 font-semibold text-gray-700 text-xs hover:text-brand-red"
+										href="/account/subscriptions"
+										onClick={() => setIsMobileMenuOpen(false)}
+									>
+										<RotateCw className="h-4 w-4 text-gray-500" />
+										<span>Refills</span>
+									</Link>
+									<Link
+										className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 font-semibold text-gray-700 text-xs hover:text-brand-red"
+										href="/wishlist"
+										onClick={() => setIsMobileMenuOpen(false)}
+									>
+										<Heart className="h-4 w-4 text-gray-500" />
+										<span>Wishlist</span>
+									</Link>
+									<Link
+										className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 font-semibold text-gray-700 text-xs hover:text-brand-red"
+										href="/account/settings"
+										onClick={() => setIsMobileMenuOpen(false)}
+									>
+										<Settings className="h-4 w-4 text-gray-500" />
+										<span>Settings</span>
+									</Link>
+								</div>
+
+								<button
+									className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/70 py-2.5 font-bold text-brand-red text-sm transition-colors hover:bg-red-50 disabled:opacity-50"
+									disabled={isMobileLoggingOut}
+									onClick={async () => {
+										setIsMobileLoggingOut(true);
+										try {
+											await authClient.signOut({
+												fetchOptions: {
+													onSuccess: () => {
+														setIsMobileMenuOpen(false);
+														router.push("/login");
+														router.refresh();
+													},
+												},
+											});
+										} finally {
+											setIsMobileLoggingOut(false);
+										}
+									}}
+									type="button"
+								>
+									<LogOut className="h-4 w-4" />
+									<span>
+										{isMobileLoggingOut ? "Signing out..." : "Log Out"}
+									</span>
+								</button>
+							</div>
+						) : (
+							<Link
+								className="flex items-center gap-2 py-2.5 font-bold text-base text-brand-red hover:text-brand-red-hover"
+								href="/login"
+								onClick={() => setIsMobileMenuOpen(false)}
+							>
+								<User className="h-5 w-5" />
+								<span>Sign In / Register</span>
+							</Link>
+						)}
 					</div>
 				</div>
 			)}

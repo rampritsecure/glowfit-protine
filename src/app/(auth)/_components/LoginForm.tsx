@@ -21,7 +21,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { authClient } from "@/server/better-auth/client";
-import { signInAction, signOutAction, signUpAction } from "../actions";
+import {
+	requestPasswordResetAction,
+	resendVerificationEmailAction,
+	signInAction,
+	signOutAction,
+	signUpAction,
+} from "../actions";
 import {
 	forgotPasswordSchema,
 	signInSchema,
@@ -106,6 +112,12 @@ export function LoginForm({
 	const [forgotError, setForgotError] = useState<string | null>(null);
 	const [forgotMessage, setForgotMessage] = useState<string | null>(null);
 	const [isForgotLoading, setIsForgotLoading] = useState(false);
+
+	// Email Verification state
+	const [isUnverifiedEmail, setIsUnverifiedEmail] = useState(false);
+	const [unverifiedEmail, setUnverifiedEmail] = useState("");
+	const [isResendingEmail, setIsResendingEmail] = useState(false);
+	const [resendStatus, setResendStatus] = useState<string | null>(null);
 
 	// Validate a single field on blur or change
 	const validateField = (field: string, value: string) => {
@@ -213,6 +225,10 @@ export function LoginForm({
 				if (!result.success) {
 					setGeneralError(result.error ?? "Failed to sign in.");
 					if (result.fieldErrors) setFieldErrors(result.fieldErrors);
+					if (result.emailNotVerified) {
+						setIsUnverifiedEmail(true);
+						setUnverifiedEmail(email);
+					}
 				} else {
 					setSuccessMessage("Signed in successfully! Redirecting...");
 					setTimeout(() => {
@@ -226,14 +242,42 @@ export function LoginForm({
 					setGeneralError(result.error ?? "Failed to create account.");
 					if (result.fieldErrors) setFieldErrors(result.fieldErrors);
 				} else {
-					setSuccessMessage("Account created successfully! Redirecting...");
-					setTimeout(() => {
-						router.push("/");
-						router.refresh();
-					}, 600);
+					if (result.emailVerificationSent) {
+						setSuccessMessage(
+							`Account created! We've sent a verification link to ${email}. Please verify your email before signing in.`,
+						);
+						setIsUnverifiedEmail(true);
+						setUnverifiedEmail(email);
+					} else {
+						setSuccessMessage("Account created successfully! Redirecting...");
+						setTimeout(() => {
+							router.push("/");
+							router.refresh();
+						}, 600);
+					}
 				}
 			}
 		});
+	};
+
+	// Resend verification email
+	const handleResendVerification = async (targetEmail: string) => {
+		setIsResendingEmail(true);
+		setResendStatus(null);
+		try {
+			const res = await resendVerificationEmailAction(targetEmail);
+			if (res.success) {
+				setResendStatus(
+					res.message ?? "Verification email resent! Please check your inbox.",
+				);
+			} else {
+				setResendStatus(res.error ?? "Failed to resend verification email.");
+			}
+		} catch {
+			setResendStatus("Failed to resend verification email. Please try again.");
+		} finally {
+			setIsResendingEmail(false);
+		}
 	};
 
 	// Handle Google OAuth
@@ -271,9 +315,15 @@ export function LoginForm({
 
 		setIsForgotLoading(true);
 		try {
-			setForgotMessage(
-				`If an account exists for ${forgotEmail}, password reset instructions have been sent.`,
-			);
+			const res = await requestPasswordResetAction(forgotEmail);
+			if (res.success) {
+				setForgotMessage(
+					res.message ??
+						`If an account exists for ${forgotEmail}, password reset instructions have been sent.`,
+				);
+			} else {
+				setForgotError(res.error ?? "Could not process request");
+			}
 		} catch (err: unknown) {
 			const message =
 				err instanceof Error ? err.message : "Could not process request";
@@ -440,6 +490,51 @@ export function LoginForm({
 					>
 						<CheckCircle2 className="h-4 w-4 shrink-0 text-green-600" />
 						<span>{successMessage}</span>
+					</motion.div>
+				)}
+			</AnimatePresence>
+
+			{/* Unverified Email Action Banner */}
+			<AnimatePresence>
+				{isUnverifiedEmail && (
+					<motion.div
+						animate={{ opacity: 1, y: 0, scale: 1 }}
+						className="mt-4 rounded-xl border border-amber-200 bg-amber-50/90 p-3.5 text-left text-xs"
+						exit={{ opacity: 0, y: -8, scale: 0.98 }}
+						initial={{ opacity: 0, y: -8, scale: 0.98 }}
+						transition={{ duration: 0.25 }}
+					>
+						<div className="flex items-start gap-2.5">
+							<Mail className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+							<div className="flex-1">
+								<p className="font-bold text-amber-900">
+									Email verification required
+								</p>
+								<p className="mt-0.5 text-amber-800">
+									Please verify your email address to access your Glow &amp; Fit
+									account.
+								</p>
+								{resendStatus && (
+									<p className="mt-2 font-medium text-emerald-700">
+										{resendStatus}
+									</p>
+								)}
+								<div className="mt-2.5 flex items-center gap-3">
+									<button
+										className="cursor-pointer font-bold text-brand-red hover:underline disabled:opacity-50"
+										disabled={isResendingEmail}
+										onClick={() =>
+											handleResendVerification(unverifiedEmail || email)
+										}
+										type="button"
+									>
+										{isResendingEmail
+											? "Sending link..."
+											: "Resend verification link"}
+									</button>
+								</div>
+							</div>
+						</div>
 					</motion.div>
 				)}
 			</AnimatePresence>
