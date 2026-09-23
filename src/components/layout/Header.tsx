@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, Search, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -68,13 +68,13 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 						>
 							<button
 								aria-expanded={isShopOpen}
-								className="flex cursor-pointer items-center gap-1 py-2 transition-colors hover:text-[#E10600] focus:outline-none"
+								className="flex cursor-pointer items-center gap-1 py-2 transition-colors hover:text-brand-red focus:outline-none"
 								onClick={() => setIsShopOpen((p) => !p)}
 								type="button"
 							>
 								Shop
 								<ChevronDown
-									className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isShopOpen ? "rotate-180 text-[#E10600]" : ""}`}
+									className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isShopOpen ? "rotate-180 text-brand-red" : ""}`}
 								/>
 							</button>
 							{isShopOpen && (
@@ -97,13 +97,13 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 											</span>
 										</Link>
 										<Link
-											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/products#whey-protein"
 										>
 											100% Whey Protein
 										</Link>
 										<Link
-											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/products#peanut-butter"
 										>
 											Peanut Butter
@@ -122,32 +122,32 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 						>
 							<button
 								aria-expanded={isCategoriesOpen}
-								className="flex cursor-pointer items-center gap-1 py-2 transition-colors hover:text-[#E10600] focus:outline-none"
+								className="flex cursor-pointer items-center gap-1 py-2 transition-colors hover:text-brand-red focus:outline-none"
 								onClick={() => setIsCategoriesOpen((p) => !p)}
 								type="button"
 							>
 								Categories
 								<ChevronDown
-									className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isCategoriesOpen ? "rotate-180 text-[#E10600]" : ""}`}
+									className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isCategoriesOpen ? "rotate-180 text-brand-red" : ""}`}
 								/>
 							</button>
 							{isCategoriesOpen && (
 								<div className="absolute top-full left-0 z-50 w-52 pt-2">
 									<div className="rounded-xl border border-gray-100 bg-white px-1.5 py-2 shadow-xl">
 										<Link
-											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/categories/muscle-building"
 										>
 											Muscle Building
 										</Link>
 										<Link
-											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/categories/energy-endurance"
 										>
 											Energy &amp; Endurance
 										</Link>
 										<Link
-											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-[#E10600]"
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
 											href="/categories/daily-wellness"
 										>
 											Daily Wellness
@@ -167,15 +167,15 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 					</nav>
 				</div>
 
-				{/* Right: Search + Cart + Mobile Menu */}
-				<div className="flex items-center gap-4 sm:gap-24">
-					{/* Search Bar */}
-					<div className="relative hidden w-[190px] sm:block md:w-[220px] lg:w-[245px] xl:w-[260px]">
+				{/* Right: Search + (Avatar + Cart) + Mobile Menu */}
+				<div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
+					{/* Search Bar (within the template/gray design area) */}
+					<div className="relative hidden w-47.5 sm:block md:w-55 lg:w-61.25 xl:w-[260px]">
 						<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
 							<Search className="h-4 w-4 text-gray-500" strokeWidth={2} />
 						</div>
 						<input
-							className="w-full rounded-full border border-gray-200 bg-white py-2 pr-3.5 pl-9 text-[12px] text-gray-900 placeholder-gray-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black/10"
+							className="w-full rounded-full border border-gray-200 bg-white/95 py-2 pr-3.5 pl-9 text-[12px] placeholder-gray-400 shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-black/10"
 							onChange={(e) => setSearchQuery(e.target.value)}
 							placeholder="Search products, flavours or goals..."
 							type="text"
@@ -183,29 +183,55 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 						/>
 					</div>
 
-					{/* Cart */}
-					<Link
-						aria-label="Shopping Cart"
-						className="group relative shrink-0 p-1 text-brand-black transition-colors hover:text-brand-red focus:outline-none"
-						href="/cart"
-					>
-						<svg
-							className="h-7 w-7 transition-transform group-hover:scale-105 sm:h-8 sm:w-8"
-							fill="none"
-							stroke="currentColor"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							viewBox="0 0 28 28"
+					{/* Avatar and Shopping Cart grouped nearby with 2-4px space on white background */}
+					<div className="flex items-center gap-1 sm:gap-1.5">
+						{/* Account / Avatar */}
+						<Link
+							aria-label="Account or Sign In"
+							className="group flex h-9 w-9 items-center justify-center rounded-full text-brand-black transition-colors hover:bg-black/5 hover:text-brand-red focus:outline-none"
+							href="/login"
 						>
-							<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-							<circle cx="10" cy="23" fill="currentColor" r="2" stroke="none" />
-							<circle cx="21" cy="23" fill="currentColor" r="2" stroke="none" />
-						</svg>
-						<span className="absolute -top-1 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-red px-1 font-bold text-[11px] text-white leading-none ring-2 ring-white">
-							{cartCount}
-						</span>
-					</Link>
+							<User className="h-5 w-5 transition-transform group-hover:scale-105" />
+						</Link>
+
+						{/* Cart */}
+						<Link
+							aria-label="Shopping Cart"
+							className="group relative flex h-9 w-9 items-center justify-center rounded-full text-brand-black transition-colors hover:bg-black/5 hover:text-brand-red focus:outline-none"
+							href="/cart"
+						>
+							<svg
+								aria-label="Shopping cart"
+								className="h-6 w-6 transition-transform group-hover:scale-105"
+								fill="none"
+								role="img"
+								stroke="currentColor"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								viewBox="0 0 28 28"
+							>
+								<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+								<circle
+									cx="10"
+									cy="23"
+									fill="currentColor"
+									r="2"
+									stroke="none"
+								/>
+								<circle
+									cx="21"
+									cy="23"
+									fill="currentColor"
+									r="2"
+									stroke="none"
+								/>
+							</svg>
+							<span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-red px-1 font-bold text-[10px] text-white leading-none ring-2 ring-white">
+								{cartCount}
+							</span>
+						</Link>
+					</div>
 
 					{/* Mobile Menu */}
 					<button
@@ -267,6 +293,16 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 					>
 						About
 					</Link>
+					<div className="border-gray-100 border-t pt-2">
+						<Link
+							className="flex items-center gap-2 py-2.5 font-bold text-base text-brand-red hover:text-brand-red-hover"
+							href="/login"
+							onClick={() => setIsMobileMenuOpen(false)}
+						>
+							<User className="h-5 w-5" />
+							<span>Sign In / Register</span>
+						</Link>
+					</div>
 				</div>
 			)}
 		</header>
