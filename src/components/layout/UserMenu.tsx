@@ -270,7 +270,7 @@ export function UserMenu({ className = "" }: UserMenuProps) {
 
 									<Link
 										className="flex items-center justify-between rounded-xl px-3 py-2 text-gray-700 transition-colors hover:bg-gray-50 hover:text-brand-red"
-										href="/orders?tab=reorder"
+										href="/buy-again"
 										onClick={() => setIsOpen(false)}
 										role="menuitem"
 									>

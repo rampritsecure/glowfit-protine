@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { CartProvider } from "@/lib/cart/cart-context";
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
@@ -35,7 +37,12 @@ export default function RootLayout({
 			lang="en"
 		>
 			<body className="min-h-screen overflow-x-hidden bg-white font-sans text-[#111111] selection:bg-[#E10600] selection:text-white">
-				<TRPCReactProvider>{children}</TRPCReactProvider>
+				<TRPCReactProvider>
+					<CartProvider>
+						{children}
+						<CartDrawer />
+					</CartProvider>
+				</TRPCReactProvider>
 			</body>
 		</html>
 	);

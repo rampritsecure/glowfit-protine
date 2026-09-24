@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useCart } from "@/lib/cart/cart-context";
 import { authClient } from "@/server/better-auth/client";
 import { UserMenu } from "./UserMenu";
 
@@ -24,7 +25,9 @@ interface HeaderProps {
 	cartCount?: number;
 }
 
-export function Header({ cartCount = 0 }: HeaderProps) {
+export function Header({ cartCount: propsCartCount }: HeaderProps) {
+	const { totalItems, openDrawer } = useCart();
+	const cartCount = propsCartCount !== undefined ? propsCartCount : totalItems;
 	const router = useRouter();
 	const { data: session } = authClient.useSession();
 	const [searchQuery, setSearchQuery] = useState("");
@@ -108,7 +111,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 										</Link>
 										<Link
 											className="flex items-center justify-between rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
-											href="/products#ready-to-mix"
+											href="/categories/ready-to-mix"
 										>
 											Ready-to-Mix Bottles
 											<span className="rounded bg-brand-red/10 px-1.5 py-0.5 font-bold text-[10px] text-brand-red">
@@ -117,13 +120,13 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 										</Link>
 										<Link
 											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
-											href="/products#whey-protein"
+											href="/categories/whey-protein"
 										>
 											100% Whey Protein
 										</Link>
 										<Link
 											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
-											href="/products#peanut-butter"
+											href="/categories/peanut-butter"
 										>
 											Peanut Butter
 										</Link>
@@ -152,13 +155,25 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 								/>
 							</button>
 							{isCategoriesOpen && (
-								<div className="absolute top-full left-0 z-50 w-52 pt-2">
+								<div className="absolute top-full left-0 z-50 w-56 pt-2">
 									<div className="rounded-xl border border-gray-100 bg-white px-1.5 py-2 shadow-xl">
 										<Link
 											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
-											href="/categories/muscle-building"
+											href="/categories/whey-protein"
 										>
-											Muscle Building
+											Whey Protein
+										</Link>
+										<Link
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
+											href="/categories/ready-to-mix"
+										>
+											Ready-to-Mix Protein
+										</Link>
+										<Link
+											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
+											href="/categories/peanut-butter"
+										>
+											Peanut Butter
 										</Link>
 										<Link
 											className="block rounded-lg px-3 py-2 font-semibold text-gray-800 text-sm transition-colors hover:bg-gray-50 hover:text-brand-red"
@@ -209,10 +224,11 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 						<UserMenu />
 
 						{/* Cart */}
-						<Link
+						<button
 							aria-label="Shopping Cart"
-							className="group relative flex h-9 w-9 items-center justify-center rounded-full text-brand-black transition-colors hover:bg-black/5 hover:text-brand-red focus:outline-none"
-							href="/cart"
+							className="group relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-brand-black transition-colors hover:bg-black/5 hover:text-brand-red focus:outline-none"
+							onClick={openDrawer}
+							type="button"
 						>
 							<svg
 								aria-label="Shopping cart"
@@ -244,7 +260,7 @@ export function Header({ cartCount = 0 }: HeaderProps) {
 							<span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-red px-1 font-bold text-[10px] text-white leading-none ring-2 ring-white">
 								{cartCount}
 							</span>
-						</Link>
+						</button>
 					</div>
 
 					{/* Mobile Menu */}

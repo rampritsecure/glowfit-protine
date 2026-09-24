@@ -1,4 +1,5 @@
 import { CategorySection } from "@/components/home/CategorySection";
+import { FeaturedProductsSection } from "@/components/home/FeaturedProductsSection";
 import { HeroBackdrop } from "@/components/home/HeroBackdrop";
 import { HeroSection } from "@/components/home/HeroSection";
 import { Header } from "@/components/layout/Header";
@@ -18,6 +19,9 @@ export default function HomePage() {
 
 			{/* Category Section */}
 			<CategorySection />
+
+			{/* Featured Products Section */}
+			<FeaturedProductsSection />
 		</main>
 	);
 }
